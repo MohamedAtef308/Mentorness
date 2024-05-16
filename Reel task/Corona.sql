@@ -1,0 +1,210 @@
+--              -- creation
+-- CREATE TABLE corona (
+-- province            VARCHAR(150),
+-- country_region      VARCHAR(150),
+-- latitude            FLOAT8,
+-- longitude           FLOAT8,
+-- date                DATE,
+-- confirmed           INT,
+-- deaths              INT,
+-- recovered           INT
+-- );
+
+--              -- make sure data is copied
+-- SELECT * FROM corona limit 5;
+
+--              -- check for NULLs
+-- SELECT
+--     *
+-- FROM
+--     corona
+-- WHERE 
+--     province        IS NULL OR            
+--     country_region  IS NULL OR    
+--     latitude        IS NULL OR    
+--     longitude       IS NULL OR    
+--     date            IS NULL OR    
+--     confirmed       IS NULL OR    
+--     deaths          IS NULL OR    
+--     recovered       IS NULL;
+
+--              -- update NULLs
+-- ALTER TABLE
+--     corona
+-- alter column province SET DEFAULT '0',
+-- alter column province set not null,
+-- alter column country_region SET DEFAULT '0',
+-- alter column country_region set not null,
+-- alter column date SET DEFAULT now(),
+-- alter column date set not null,
+-- alter column deaths SET DEFAULT 0,
+-- alter column deaths set not null,
+-- alter column confirmed SET DEFAULT 0,
+-- alter column confirmed set not null,
+-- alter column recovered SET DEFAULT 0,
+-- alter column recovered set not null,
+-- alter column latitude SET DEFAULT 0,
+-- alter column latitude set not null,
+-- alter column longitude SET DEFAULT 0,
+-- alter column longitude set not null;
+
+--              -- check total number of rows
+-- SELECT
+--     COUNT(*) AS total_num_rows
+-- FROM
+--     corona;
+
+--              -- get start_date and end_date
+-- SELECT
+--     MIN(date) start_date,
+--     MAX(date) end_date
+-- FROM
+--     corona;
+
+--              -- get number of months
+-- SELECT
+--     COUNT(
+--         DISTINCT (
+--                     extract(year from date) * 100 +
+--                     EXTRACT(month from date)
+--                 )
+--          ) AS number_of_months
+-- FROM
+--     corona;
+
+--              -- monthly average of cases
+-- SELECT
+--     DATE_TRUNC('month', date) as month,
+--     AVG(confirmed) AS monthly_average_confirmed,
+--     AVG(deaths) as monthly_average_deaths,
+--     AVG(recovered) as monthly_average_recovered
+-- FROM
+--     corona
+-- GROUP BY
+--     date_trunc( 'month', date )
+-- ORDER BY
+--     month;
+
+--              -- monthly mode of cases
+-- SELECT 
+--     DATE_TRUNC('month', date) AS month,
+--     MODE() WITHIN GROUP (ORDER BY confirmed) AS mode_confirmed,
+--     MODE() WITHIN GROUP (ORDER BY deaths) AS mode_deaths,
+--     MODE() WITHIN GROUP (ORDER BY recovered) AS mode_recovered
+-- FROM 
+--     corona
+-- GROUP BY 
+--     DATE_TRUNC('month', date);
+
+--              -- minimum per year
+-- SELECT
+--     EXTRACT( YEAR FROM date) AS year,
+--     MIN(confirmed) AS min_confirmed,
+--     MIN(deaths) AS min_deaths,
+--     MIN(recovered) AS min_recovered
+-- FROM
+--     corona
+-- GROUP BY
+--     EXTRACT( YEAR FROM date);
+
+--              -- max per year
+-- SELECT
+--     EXTRACT( YEAR FROM date) AS year,
+--     MAX(confirmed) AS min_confirmed,
+--     MAX(deaths) AS min_deaths,
+--     MAX(recovered) AS min_recovered
+-- FROM
+--     corona
+-- GROUP BY
+--     EXTRACT( YEAR FROM date);
+
+--              -- sum per month
+-- SELECT
+--     DATE_TRUNC('month', date) as month,
+--     SUM(confirmed) as total_confirmed,
+--     SUM(deaths) as total_deaths,
+--     SUM(recovered) as total_recovered
+-- FROM
+--     corona
+-- GROUP BY
+--     DATE_TRUNC('month', date)
+-- ORDER BY
+--     month;
+
+--              -- confirmed stats per month
+-- SELECT
+--     DATE_TRUNC('month', date) as month,
+--     SUM(confirmed) as monthly_total_confirmed,
+--     AVG(confirmed) AS monthly_average_confirmed,
+--     VARIANCE(confirmed) as monthly_variance_confirmed,
+--     STDDEV(confirmed) as monthly_std_dev_confirmed
+-- FROM
+--     corona
+-- GROUP BY
+--     date_trunc( 'month', date )
+-- ORDER BY
+--     month;
+
+--              -- deaths stats per month
+-- SELECT
+--     DATE_TRUNC('month', date) as month,
+--     SUM(deaths) as monthly_total_deaths,
+--     AVG(deaths) AS monthly_average_deaths,
+--     VARIANCE(deaths) as monthly_variance_deaths,
+--     STDDEV(deaths) as monthly_std_dev_deaths
+-- FROM
+--     corona
+-- GROUP BY
+--     date_trunc( 'month', date )
+-- ORDER BY
+--     month;
+
+--              -- recovered stats per month
+-- SELECT
+--     DATE_TRUNC('month', date) as month,
+--     SUM(recovered) as monthly_total_recovered,
+--     AVG(recovered) AS monthly_average_recovered,
+--     VARIANCE(recovered) as monthly_variance_recovered,
+--     STDDEV(recovered) as monthly_std_dev_recovered
+-- FROM
+--     corona
+-- GROUP BY
+--     date_trunc( 'month', date )
+-- ORDER BY
+--     month;
+
+--              -- highest confirmed cases
+-- SELECT
+--     country_region,
+--     SUM(confirmed) AS confirmed_cases
+-- FROM
+--     corona
+-- GROUP BY
+--     country_region
+-- ORDER BY
+--     confirmed_cases DESC
+-- LIMIT 1;
+
+--              -- lowest deaths
+-- SELECT
+--     country_region,
+--     SUM(deaths) AS death_cases
+-- FROM
+--     corona
+-- GROUP BY
+--     country_region
+-- ORDER BY
+--     death_cases
+-- LIMIT 4;
+
+--              -- top 5 recovered
+-- SELECT
+--     country_region,
+--     SUM(recovered) AS recovered_cases
+-- FROM
+--     corona
+-- GROUP BY
+--     country_region
+-- ORDER BY
+--     recovered_cases DESC
+-- LIMIT 5;
